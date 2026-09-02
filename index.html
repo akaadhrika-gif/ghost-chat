@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GhostChat - Anonymous Messaging</title>
+  <meta name="description" content="Chat anonymously with your friends using fun auto-generated aliases. No sign-up, no real name needed." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg-deep:#07070f;--bg-card:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);
+      --border-glow:rgba(139,92,246,.4);--primary:#8b5cf6;--primary-light:#a78bfa;
+      --primary-glow:rgba(139,92,246,.25);--accent:#ec4899;--text:#f1f5f9;
+      --text-muted:#94a3b8;--text-dim:#475569;--bubble-own:linear-gradient(135deg,#8b5cf6,#6d28d9);
+      --bubble-other:rgba(255,255,255,.07);--shadow-glow:0 0 60px rgba(139,92,246,.15);
+    }
+    html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg-deep);color:var(--text);overflow:hidden}
+    .bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.35;animation:drift 14s ease-in-out infinite alternate}
+    .orb1{width:500px;height:500px;background:#7c3aed;top:-200px;left:-100px;animation-delay:0s}
+    .orb2{width:400px;height:400px;background:#db2777;bottom:-150px;right:-100px;animation-delay:-6s}
+    .orb3{width:300px;height:300px;background:#2563eb;top:40%;left:40%;animation-delay:-3s}
+    @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.08)}}
+    #app{position:relative;z-index:1;height:100vh;display:flex;align-items:center;justify-content:center}
+    #landing{display:flex;flex-direction:column;align-items:center;gap:32px;animation:fadeUp .6s ease both;max-width:460px;width:90%}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .logo-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .logo-icon{font-size:56px;filter:drop-shadow(0 0 24px rgba(139,92,246,.7));animation:floatIcon 3s ease-in-out infinite}
+    @keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .logo-title{font-size:40px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#c4b5fd,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .logo-sub{color:var(--text-muted);font-size:15px;font-weight:400;text-align:center}
+    .alias-card{width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:28px 28px 24px;backdrop-filter:blur(24px);box-shadow:var(--shadow-glow);display:flex;flex-direction:column;gap:20px}
+    .alias-display{background:rgba(139,92,246,.12);border:1px solid var(--border-glow);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px}
+    .alias-avatar{width:48px;height:48px;border-radius:50%;font-size:24px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--accent));flex-shrink:0}
+    .alias-name-wrap{flex:1}
+    .alias-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+    #aliasName{font-size:22px;font-weight:700;color:var(--text)}
+    .btn-regen{background:none;border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text-muted);cursor:pointer;font-size:18px;transition:all .2s;flex-shrink:0}
+    .btn-regen:hover{border-color:var(--primary);color:var(--primary);transform:rotate(60deg)}
+    .room-row{display:flex;flex-direction:column;gap:8px}
+    .room-label{font-size:13px;color:var(--text-muted);font-weight:500}
+    .room-input-wrap{display:flex;gap:10px}
+    input[type=text]{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
+    input[type=text]::placeholder{color:var(--text-dim)}
+    input[type=text]:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+    .btn-primary{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;border-radius:12px;padding:12px 22px;color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 4px 24px rgba(139,92,246,.35)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(139,92,246,.5)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-enter{width:100%;padding:14px;font-size:17px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+    .divider{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:13px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .badge-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .badge{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-size:12px;color:var(--text-muted)}
+    #chat{display:none;width:min(780px,100vw);height:100vh;flex-direction:column;background:var(--bg-card);backdrop-filter:blur(28px);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+    .chat-header{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);backdrop-filter:blur(10px);flex-shrink:0}
+    .room-pill{flex:1;display:flex;align-items:center;gap:10px}
+    .room-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+    .room-name-chat{font-weight:700;font-size:17px}
+    .room-id-chip{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:3px 10px;letter-spacing:.05em;cursor:pointer}
+    .my-alias-chip{display:flex;align-items:center;gap:8px;background:rgba(139,92,246,.12);border:1px solid var(--border-glow);border-radius:10px;padding:6px 12px}
+    .chip-name{font-size:13px;font-weight:600;color:var(--primary-light)}
+    .btn-leave{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:7px 14px;color:#f87171;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-leave:hover{background:rgba(239,68,68,.22)}
+    .members-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+    .members-bar::-webkit-scrollbar{display:none}
+    .member-chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:3px 10px;white-space:nowrap}
+    #messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent}
+    #messages::-webkit-scrollbar{width:4px}
+    #messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+    .msg-group{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}
+    .msg-group.own{align-items:flex-end}
+    .msg-group.other{align-items:flex-start}
+    .msg-sender{font-size:11px;font-weight:600;color:var(--text-muted);padding:0 12px;display:flex;align-items:center;gap:5px;margin-bottom:3px}
+    .bubble{max-width:70%;padding:10px 15px 14px;border-radius:18px;font-size:15px;line-height:1.5;word-break:break-word;animation:popIn .18s cubic-bezier(.175,.885,.32,1.275) both;position:relative;overflow:hidden}
+    @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    .msg-group.own .bubble{background:var(--bubble-own);color:#fff;border-bottom-right-radius:5px}
+    .msg-group.other .bubble{background:var(--bubble-other);border-bottom-left-radius:5px}
+    .bubble-time{font-size:10px;color:var(--text-dim);padding:0 12px;margin-top:1px}
+    /* countdown bar */
+    .countdown-bar{position:absolute;bottom:0;left:0;height:3px;width:100%;border-radius:0 0 18px 18px;background:rgba(139,92,246,.5);transform-origin:left;transition:background .5s}
+    .countdown-bar.warn{background:rgba(239,68,68,.7)}
+    @keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+    /* bubble dying */
+    .bubble-wrapper{display:contents}
+    .bubble-wrapper.dying .bubble,.bubble-wrapper.dying .bubble-time{animation:fadeVanish .6s ease forwards}
+    @keyframes fadeVanish{to{opacity:0;transform:scale(.8) translateY(-4px);filter:blur(4px)}}
+    .sys-msg{text-align:center;font-size:12px;color:var(--text-dim);padding:6px 0;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .typing-row{padding:0 20px 6px;min-height:22px;font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .typing-dots{display:flex;gap:3px}
+    .typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--text-dim);display:block;animation:bounce .9s ease-in-out infinite}
+    .typing-dots span:nth-child(2){animation-delay:.15s}
+    .typing-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    .chat-input-area{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;background:rgba(255,255,255,.02);flex-shrink:0}
+    #msgInput{flex:1;resize:none;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;min-height:48px;max-height:120px;transition:border-color .2s,box-shadow .2s;line-height:1.5}
+    #msgInput::placeholder{color:var(--text-dim)}
+    #msgInput:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+    #sendBtn{width:48px;height:48px;border-radius:14px;flex-shrink:0;background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s;box-shadow:0 4px 18px rgba(139,92,246,.4)}
+    #sendBtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.55)}
+    #sendBtn:active{transform:scale(.95)}
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,50,.95);border:1px solid var(--border);border-radius:12px;padding:10px 20px;font-size:13px;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;z-index:999;backdrop-filter:blur(12px);white-space:nowrap}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:600px){.chip-name{display:none}.room-id-chip{display:none}.bubble{max-width:85%}}
+  </style>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div id="app">
+  <div id="landing">
+    <div class="logo-wrap">
+      <div class="logo-icon">&#x1F47B;</div>
+      <div class="logo-title">GhostChat</div>
+      <div class="logo-sub">Chat anonymously. No names. No traces.</div>
+    </div>
+    <div class="alias-card">
+      <div class="alias-display">
+        <div class="alias-avatar" id="aliasAvatar">&#x1F98A;</div>
+        <div class="alias-name-wrap">
+          <div class="alias-label">Your anonymous alias</div>
+          <div id="aliasName">Loading...</div>
+        </div>
+        <button class="btn-regen" id="regenBtn" title="New alias">&#x1F504;</button>
+      </div>
+      <div class="divider">choose a room</div>
+      <div class="room-row">
+        <div class="room-label">Room code &mdash; share this with your friends</div>
+        <div class="room-input-wrap">
+          <input type="text" id="roomInput" placeholder="e.g. sunset42 or press Generate" maxlength="20" />
+          <button class="btn-primary" id="genRoomBtn">Generate</button>
+        </div>
+      </div>
+      <button class="btn-primary btn-enter" id="enterBtn">
+        <span>Enter Room</span><span>&#x2192;</span>
+      </button>
+      <div class="badge-row">
+        <div class="badge">&#x1F512; No signup</div>
+        <div class="badge">&#x1F47B; Anonymous</div>
+        <div class="badge">&#x26A1; Real-time</div>
+        <div class="badge">&#x1F310; Any device</div>
+        <div class="badge">&#x1F525; Self-destructs in 2 min</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="chat">
+    <div class="chat-header">
+      <div class="room-pill">
+        <div class="room-dot"></div>
+        <div class="room-name-chat">&#x1F3E0; <span id="roomNameDisplay"></span></div>
+        <div class="room-id-chip" id="roomIdChip" title="Click to copy">&#x1F4CB; Copy code</div>
+      </div>
+      <div class="my-alias-chip">
+        <span id="myChipEmoji"></span>
+        <span class="chip-name" id="myChipName"></span>
+      </div>
+      <button class="btn-leave" id="leaveBtn">Leave</button>
+    </div>
+    <div class="members-bar" id="membersBar">
+      <span style="flex-shrink:0">&#x1F465; Online:</span>
+    </div>
+    <div id="messages"></div>
+    <div class="typing-row" id="typingRow"></div>
+    <div class="chat-input-area">
+      <textarea id="msgInput" placeholder="Type a message... (Enter to send)" rows="1"></textarea>
+      <button id="sendBtn">&#x27A4;</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ── Alias data
+const adjectives=['Quantum','Neon','Cosmic','Silent','Shadow','Ghost','Solar','Lunar','Cyber','Swift','Vortex','Azure','Crimson','Amber','Crystal','Phantom','Turbo','Storm','Nova','Flux','Stealth','Blaze','Thunder','Mystic','Vapor','Rogue','Glitch','Pixel','Ultra','Dark'];
+const nouns=['Fox','Panda','Tiger','Wolf','Eagle','Shark','Hawk','Lynx','Cobra','Viper','Phoenix','Dragon','Raven','Falcon','Jaguar','Panther','Manta','Kraken','Gecko','Ibis','Ferret','Chameleon','Axolotl','Okapi','Quokka','Narwhal','Otter','Wyvern','Capybara','Meerkat'];
+const emojis=['🦊','🐼','🐯','🐺','🦅','🦈','🦁','🐆','🐍','🔮','🦋','🐉','🦜','🦆','🦝','🐙','🌊','⚡','🌌','🎭','🦄','🐬','🦕','🎪','🌙','🍄','🎯','💎','🌀','🔥'];
+const roomWords=['sunset','cloud','pixel','neon','solar','lunar','cosmic','ghost','swift','mystic','vortex','crystal','amber','rogue','glitch','turbo','storm','nova','cipher','prism'];
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function genAlias(){const i=Math.floor(Math.random()*emojis.length);return{name:rand(adjectives)+rand(nouns),emoji:emojis[i]}}
+function genRoom(){return rand(roomWords)+Math.floor(10+Math.random()*89)}
+
+let myAlias,myEmoji,myRoom,myUserId;
+let bc,localMembers={},localTyping={};
+let typingTimer,lastSender=null,lastTimestamp=0;
+const DELETE_MS=2*60*1000; // 2 minutes
+
+// DOM
+const landingEl=document.getElementById('landing');
+const chatEl=document.getElementById('chat');
+const aliasNameEl=document.getElementById('aliasName');
+const aliasAvatarEl=document.getElementById('aliasAvatar');
+const regenBtn=document.getElementById('regenBtn');
+const genRoomBtn=document.getElementById('genRoomBtn');
+const roomInput=document.getElementById('roomInput');
+const enterBtn=document.getElementById('enterBtn');
+const roomNameDisplay=document.getElementById('roomNameDisplay');
+const roomIdChip=document.getElementById('roomIdChip');
+const myChipEmoji=document.getElementById('myChipEmoji');
+const myChipName=document.getElementById('myChipName');
+const leaveBtn=document.getElementById('leaveBtn');
+const messagesEl=document.getElementById('messages');
+const membersBar=document.getElementById('membersBar');
+const typingRow=document.getElementById('typingRow');
+const msgInput=document.getElementById('msgInput');
+const sendBtn=document.getElementById('sendBtn');
+const toastEl=document.getElementById('toast');
+
+function applyAlias(a){myAlias=a.name;myEmoji=a.emoji;aliasNameEl.textContent=myAlias;aliasAvatarEl.textContent=myEmoji}
+applyAlias(genAlias());
+
+regenBtn.addEventListener('click',()=>applyAlias(genAlias()));
+genRoomBtn.addEventListener('click',()=>{roomInput.value=genRoom()});
+enterBtn.addEventListener('click',enterRoom);
+roomInput.addEventListener('keydown',e=>{if(e.key==='Enter')enterRoom()});
+
+function enterRoom(){
+  const code=(roomInput.value.trim().toLowerCase().replace(/\s+/g,'')||genRoom());
+  roomInput.value=code;
+  myRoom=code;
+  myUserId='u'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+  showChat();
+}
+
+function showChat(){
+  landingEl.style.display='none';
+  chatEl.style.display='flex';
+  roomNameDisplay.textContent=myRoom;
+  myChipEmoji.textContent=myEmoji;
+  myChipName.textContent=myAlias;
+  setupBroadcastRoom();
+}
+
+roomIdChip.addEventListener('click',()=>{
+  navigator.clipboard.writeText(myRoom).then(()=>showToast('Room code copied! Share with friends 🎉')).catch(()=>{showToast('Room: '+myRoom)});
+});
+
+// ── BroadcastChannel (real multi-tab, same device)
+function setupBroadcastRoom(){
+  bc=new BroadcastChannel('ghostchat_'+myRoom);
+  localMembers[myUserId]={alias:myAlias,emoji:myEmoji};
+  renderMembers(localMembers);
+  broadcast({type:'join',userId:myUserId,alias:myAlias,emoji:myEmoji});
+  appendSystemMsg(myEmoji+' '+myAlias+' joined the room');
+  showToast('Joined room: '+myRoom+' 🎉');
+
+  bc.onmessage=evt=>{
+    const d=evt.data;
+    if(d.type==='join'){
+      localMembers[d.userId]={alias:d.alias,emoji:d.emoji};
+      renderMembers(localMembers);
+      appendSystemMsg(d.emoji+' '+d.alias+' joined the room');
+      broadcast({type:'announce',userId:myUserId,alias:myAlias,emoji:myEmoji});
+    }else if(d.type==='announce'){
+      localMembers[d.userId]={alias:d.alias,emoji:d.emoji};
+      renderMembers(localMembers);
+    }else if(d.type==='leave'){
+      appendSystemMsg(d.emoji+' '+d.alias+' left the room');
+      delete localMembers[d.userId];
+      delete localTyping[d.userId];
+      renderMembers(localMembers);
+      renderTyping(localTyping);
+    }else if(d.type==='message'){
+      appendMessage(d);
+    }else if(d.type==='typing'){
+      if(d.isTyping)localTyping[d.userId]={alias:d.alias,emoji:d.emoji};
+      else delete localTyping[d.userId];
+      renderTyping(localTyping);
+    }
+  };
+}
+
+function broadcast(data){if(bc)bc.postMessage(data)}
+
+function sendMsg(){
+  const text=msgInput.value.trim();
+  if(!text)return;
+  msgInput.value='';
+  msgInput.style.height='';
+  clearTypingSignal();
+  const msg={type:'message',alias:myAlias,emoji:myEmoji,userId:myUserId,text,timestamp:Date.now()};
+  broadcast(msg);
+  appendMessage(msg);
+}
+
+sendBtn.addEventListener('click',sendMsg);
+msgInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
+msgInput.addEventListener('input',()=>{
+  msgInput.style.height='auto';
+  msgInput.style.height=Math.min(msgInput.scrollHeight,120)+'px';
+  sendTyping(true);
+  clearTimeout(typingTimer);
+  typingTimer=setTimeout(()=>sendTyping(false),2500);
+});
+
+function sendTyping(isTyping){broadcast({type:'typing',userId:myUserId,alias:myAlias,emoji:myEmoji,isTyping})}
+function clearTypingSignal(){clearTimeout(typingTimer);sendTyping(false)}
+
+leaveBtn.addEventListener('click',()=>{
+  clearTypingSignal();
+  broadcast({type:'leave',userId:myUserId,alias:myAlias,emoji:myEmoji});
+  if(bc){bc.close();bc=null}
+  chatEl.style.display='none';
+  landingEl.style.display='flex';
+  messagesEl.innerHTML='';
+  localMembers={};localTyping={};
+  lastSender=null;lastTimestamp=0;
+});
+
+// ── Render helpers
+function appendMessage(msg){
+  const isOwn=msg.userId===myUserId;
+  const isSame=msg.userId===lastSender&&(msg.timestamp-lastTimestamp)<60000;
+  let group;
+  const last=messagesEl.lastElementChild;
+  if(last&&last.classList.contains('msg-group')&&last.dataset.uid===msg.userId&&isSame){
+    group=last;
+  }else{
+    group=document.createElement('div');
+    group.className='msg-group '+(isOwn?'own':'other');
+    group.dataset.uid=msg.userId;
+    if(!isOwn){
+      const s=document.createElement('div');
+      s.className='msg-sender';
+      s.innerHTML='<span>'+msg.emoji+'</span> '+escHtml(msg.alias);
+      group.appendChild(s);
+    }
+    messagesEl.appendChild(group);
+  }
+
+  // wrapper holds bubble + time together for clean removal
+  const wrapper=document.createElement('div');
+  wrapper.className='bubble-wrapper';
+  wrapper.style.cssText='display:flex;flex-direction:column;gap:2px';
+
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.textContent=msg.text;
+
+  // ── countdown bar
+  const bar=document.createElement('div');
+  bar.className='countdown-bar';
+  const elapsed=Date.now()-msg.timestamp;
+  const remaining=Math.max(0,DELETE_MS-elapsed);
+  const pct=remaining/DELETE_MS;
+  bar.style.transform='scaleX('+pct+')';
+  bar.style.animation='shrink '+remaining+'ms linear forwards';
+  bubble.appendChild(bar);
+
+  // warn at 30 s remaining
+  const warnDelay=Math.max(0,remaining-30000);
+  const warnTimer=setTimeout(()=>bar.classList.add('warn'),warnDelay);
+
+  wrapper.appendChild(bubble);
+
+  const time=document.createElement('div');
+  time.className='bubble-time';
+  time.textContent=fmtTime(msg.timestamp);
+  wrapper.appendChild(time);
+  group.appendChild(wrapper);
+
+  // ── auto-delete after remaining ms
+  setTimeout(()=>{
+    clearTimeout(warnTimer);
+    wrapper.classList.add('dying');
+    setTimeout(()=>{
+      wrapper.remove();
+      // if group is now empty (only has sender label or nothing), remove it
+      const bubbles=group.querySelectorAll('.bubble-wrapper');
+      if(bubbles.length===0) group.remove();
+    },650);
+  },remaining);
+
+  lastSender=msg.userId;lastTimestamp=msg.timestamp;
+  scrollBottom();
+}
+
+function appendSystemMsg(text){
+  const el=document.createElement('div');
+  el.className='sys-msg';
+  el.textContent=text;
+  messagesEl.appendChild(el);
+  scrollBottom();
+}
+
+function renderMembers(members){
+  const entries=Object.entries(members);
+  membersBar.innerHTML='<span style="flex-shrink:0;margin-right:4px">&#x1F465; Online ('+entries.length+'):</span>';
+  entries.forEach(([uid,m])=>{
+    const chip=document.createElement('div');
+    chip.className='member-chip';
+    chip.innerHTML='<span>'+m.emoji+'</span><span>'+escHtml(m.alias)+(uid===myUserId?' (you)':'')+'</span>';
+    membersBar.appendChild(chip);
+  });
+}
+
+function renderTyping(typing){
+  const others=Object.entries(typing).filter(([uid])=>uid!==myUserId);
+  if(!others.length){typingRow.innerHTML='';return}
+  const names=others.map(([,v])=>v.emoji+' '+v.alias).join(', ');
+  typingRow.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div><span>'+escHtml(names)+' '+(others.length===1?'is':'are')+' typing...</span>';
+}
+
+function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function scrollBottom(){requestAnimationFrame(()=>{messagesEl.scrollTop=messagesEl.scrollHeight})}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function showToast(msg,dur=3000){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'),dur);
+}
+</script>
+</body>
+</html>
