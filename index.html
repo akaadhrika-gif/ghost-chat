@@ -55,16 +55,24 @@
     .badge-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
     .badge{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-size:12px;color:var(--text-muted)}
     #chat{display:none;width:min(780px,100vw);height:100vh;flex-direction:column;background:var(--bg-card);backdrop-filter:blur(28px);border-left:1px solid var(--border);border-right:1px solid var(--border)}
-    .chat-header{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);backdrop-filter:blur(10px);flex-shrink:0}
+    .chat-header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);backdrop-filter:blur(10px);flex-shrink:0}
     .room-pill{flex:1;display:flex;align-items:center;gap:10px}
     .room-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
     @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
     .room-name-chat{font-weight:700;font-size:17px}
-    .room-id-chip{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:3px 10px;letter-spacing:.05em;cursor:pointer}
+    .action-chips{display:flex;gap:6px}
+    .room-id-chip{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:4px 10px;letter-spacing:.05em;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+    .room-id-chip:hover{background:rgba(255,255,255,.12);color:var(--text)}
     .my-alias-chip{display:flex;align-items:center;gap:8px;background:rgba(139,92,246,.12);border:1px solid var(--border-glow);border-radius:10px;padding:6px 12px}
     .chip-name{font-size:13px;font-weight:600;color:var(--primary-light)}
     .btn-leave{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:7px 14px;color:#f87171;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
     .btn-leave:hover{background:rgba(239,68,68,.22)}
+    
+    /* Notice banner for Firebase permissions if locked */
+    .fb-notice{display:none;background:rgba(245,158,11,.12);border-bottom:1px solid rgba(245,158,11,.3);padding:8px 20px;font-size:12px;color:#fcd34d;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
+    .fb-notice a{color:#fef08a;text-decoration:underline;font-weight:600}
+    .fb-notice-close{background:none;border:none;color:#fcd34d;cursor:pointer;font-size:16px;line-height:1}
+
     .members-bar{display:flex;align-items:center;gap:8px;padding:8px 20px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
     .members-bar::-webkit-scrollbar{display:none}
     .member-chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:999px;padding:3px 10px;white-space:nowrap}
@@ -75,27 +83,32 @@
     .msg-group.own{align-items:flex-end}
     .msg-group.other{align-items:flex-start}
     .msg-sender{font-size:11px;font-weight:600;color:var(--text-muted);padding:0 12px;display:flex;align-items:center;gap:5px;margin-bottom:3px}
-    .bubble{max-width:70%;padding:10px 15px 14px;border-radius:18px;font-size:15px;line-height:1.5;word-break:break-word;animation:popIn .18s cubic-bezier(.175,.885,.32,1.275) both;position:relative;overflow:hidden}
+    .bubble{max-width:75%;padding:10px 16px 14px;border-radius:18px;font-size:15px;line-height:1.5;word-break:break-word;animation:popIn .18s cubic-bezier(.175,.885,.32,1.275) both;position:relative;overflow:hidden}
     @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
     .msg-group.own .bubble{background:var(--bubble-own);color:#fff;border-bottom-right-radius:5px}
     .msg-group.other .bubble{background:var(--bubble-other);border-bottom-left-radius:5px}
     .bubble-time{font-size:10px;color:var(--text-dim);padding:0 12px;margin-top:1px}
-    /* countdown bar */
+    
+    /* 10-Minute countdown bar */
     .countdown-bar{position:absolute;bottom:0;left:0;height:3px;width:100%;border-radius:0 0 18px 18px;background:rgba(139,92,246,.5);transform-origin:left;transition:background .5s}
-    .countdown-bar.warn{background:rgba(239,68,68,.7)}
+    .countdown-bar.warn{background:rgba(239,68,68,.75)}
     @keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-    /* bubble dying */
+    
+    /* Bubble dying / self-destruct */
     .bubble-wrapper{display:contents}
-    .bubble-wrapper.dying .bubble,.bubble-wrapper.dying .bubble-time{animation:fadeVanish .6s ease forwards}
+    .bubble-wrapper.dying .bubble,.bubble-wrapper.dying .bubble-time{animation:fadeVanish .65s ease forwards}
     @keyframes fadeVanish{to{opacity:0;transform:scale(.8) translateY(-4px);filter:blur(4px)}}
+    
     .sys-msg{text-align:center;font-size:12px;color:var(--text-dim);padding:6px 0;animation:fadeIn .3s ease}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    
     .typing-row{padding:0 20px 6px;min-height:22px;font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px;flex-shrink:0}
     .typing-dots{display:flex;gap:3px}
     .typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--text-dim);display:block;animation:bounce .9s ease-in-out infinite}
     .typing-dots span:nth-child(2){animation-delay:.15s}
     .typing-dots span:nth-child(3){animation-delay:.3s}
     @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    
     .chat-input-area{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;background:rgba(255,255,255,.02);flex-shrink:0}
     #msgInput{flex:1;resize:none;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;outline:none;min-height:48px;max-height:120px;transition:border-color .2s,box-shadow .2s;line-height:1.5}
     #msgInput::placeholder{color:var(--text-dim)}
@@ -103,9 +116,10 @@
     #sendBtn{width:48px;height:48px;border-radius:14px;flex-shrink:0;background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s;box-shadow:0 4px 18px rgba(139,92,246,.4)}
     #sendBtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.55)}
     #sendBtn:active{transform:scale(.95)}
+    
     #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,50,.95);border:1px solid var(--border);border-radius:12px;padding:10px 20px;font-size:13px;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;z-index:999;backdrop-filter:blur(12px);white-space:nowrap}
     #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:600px){.chip-name{display:none}.room-id-chip{display:none}.bubble{max-width:85%}}
+    @media(max-width:600px){.chip-name{display:none}.action-chips{gap:4px}.bubble{max-width:85%}}
   </style>
 </head>
 <body>
@@ -134,7 +148,7 @@
       <div class="room-row">
         <div class="room-label">Room code &mdash; share this with your friends</div>
         <div class="room-input-wrap">
-          <input type="text" id="roomInput" placeholder="e.g. sunset42 or press Generate" maxlength="20" />
+          <input type="text" id="roomInput" placeholder="e.g. sunset42 or click Generate" maxlength="24" />
           <button class="btn-primary" id="genRoomBtn">Generate</button>
         </div>
       </div>
@@ -144,9 +158,8 @@
       <div class="badge-row">
         <div class="badge">&#x1F512; No signup</div>
         <div class="badge">&#x1F47B; Anonymous</div>
-        <div class="badge">&#x26A1; Real-time</div>
-        <div class="badge">&#x1F310; Any device</div>
-        <div class="badge">&#x1F525; Self-destructs in 2 min</div>
+        <div class="badge">&#x26A1; Real-time multi-device</div>
+        <div class="badge">&#x1F525; Self-destructs in 10 min</div>
       </div>
     </div>
   </div>
@@ -156,7 +169,10 @@
       <div class="room-pill">
         <div class="room-dot"></div>
         <div class="room-name-chat">&#x1F3E0; <span id="roomNameDisplay"></span></div>
-        <div class="room-id-chip" id="roomIdChip" title="Click to copy">&#x1F4CB; Copy code</div>
+        <div class="action-chips">
+          <div class="room-id-chip" id="copyCodeChip" title="Copy room code">&#x1F4CB; Code</div>
+          <div class="room-id-chip" id="copyLinkChip" title="Copy shareable link">&#x1F517; Link</div>
+        </div>
       </div>
       <div class="my-alias-chip">
         <span id="myChipEmoji"></span>
@@ -164,8 +180,14 @@
       </div>
       <button class="btn-leave" id="leaveBtn">Leave</button>
     </div>
+    
+    <div class="fb-notice" id="fbNotice">
+      <span>⚠️ <b>Firebase Rules Alert:</b> Database is locked. Running over instant cloud relay. To store in Firebase, set rules in <a href="https://console.firebase.google.com/project/ghost-chat-49ddc/database/ghost-chat-49ddc-default-rtdb/rules" target="_blank" rel="noopener">Firebase Console</a> to <code>".read": true, ".write": true</code>.</span>
+      <button class="fb-notice-close" id="fbNoticeClose">&times;</button>
+    </div>
+
     <div class="members-bar" id="membersBar">
-      <span style="flex-shrink:0">&#x1F465; Online:</span>
+      <span style="flex-shrink:0">&#x1F465; Online (1):</span>
     </div>
     <div id="messages"></div>
     <div class="typing-row" id="typingRow"></div>
@@ -177,246 +199,610 @@
 </div>
 <div id="toast"></div>
 
+<!-- Firebase v9 compat CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- MQTT.js CDN for zero-config multi-device cloud relay backup -->
+<script src="https://unpkg.com/mqtt@5.3.5/dist/mqtt.min.js"></script>
+
 <script>
-// ── Alias data
-const adjectives=['Quantum','Neon','Cosmic','Silent','Shadow','Ghost','Solar','Lunar','Cyber','Swift','Vortex','Azure','Crimson','Amber','Crystal','Phantom','Turbo','Storm','Nova','Flux','Stealth','Blaze','Thunder','Mystic','Vapor','Rogue','Glitch','Pixel','Ultra','Dark'];
-const nouns=['Fox','Panda','Tiger','Wolf','Eagle','Shark','Hawk','Lynx','Cobra','Viper','Phoenix','Dragon','Raven','Falcon','Jaguar','Panther','Manta','Kraken','Gecko','Ibis','Ferret','Chameleon','Axolotl','Okapi','Quokka','Narwhal','Otter','Wyvern','Capybara','Meerkat'];
-const emojis=['🦊','🐼','🐯','🐺','🦅','🦈','🦁','🐆','🐍','🔮','🦋','🐉','🦜','🦆','🦝','🐙','🌊','⚡','🌌','🎭','🦄','🐬','🦕','🎪','🌙','🍄','🎯','💎','🌀','🔥'];
-const roomWords=['sunset','cloud','pixel','neon','solar','lunar','cosmic','ghost','swift','mystic','vortex','crystal','amber','rogue','glitch','turbo','storm','nova','cipher','prism'];
+// ── Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyArQmZNWeo1wowSc0rv_dRbqXr3Z3HubRQ",
+  authDomain: "ghost-chat-49ddc.firebaseapp.com",
+  databaseURL: "https://ghost-chat-49ddc-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ghost-chat-49ddc",
+  storageBucket: "ghost-chat-49ddc.firebasestorage.app",
+  messagingSenderId: "941180576367",
+  appId: "1:941180576367:web:f662e342709a73558ea39a",
+  measurementId: "G-BBC6RB98NJ"
+};
 
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function genAlias(){const i=Math.floor(Math.random()*emojis.length);return{name:rand(adjectives)+rand(nouns),emoji:emojis[i]}}
-function genRoom(){return rand(roomWords)+Math.floor(10+Math.random()*89)}
+let db = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+} catch (e) {
+  console.warn("Firebase init note:", e);
+}
 
-let myAlias,myEmoji,myRoom,myUserId;
-let bc,localMembers={},localTyping={};
-let typingTimer,lastSender=null,lastTimestamp=0;
-const DELETE_MS=2*60*1000; // 2 minutes
+// ── 10-Minute Auto-Delete Timer
+const DELETE_MS = 10 * 60 * 1000; // 10 minutes (600,000 ms)
 
-// DOM
-const landingEl=document.getElementById('landing');
-const chatEl=document.getElementById('chat');
-const aliasNameEl=document.getElementById('aliasName');
-const aliasAvatarEl=document.getElementById('aliasAvatar');
-const regenBtn=document.getElementById('regenBtn');
-const genRoomBtn=document.getElementById('genRoomBtn');
-const roomInput=document.getElementById('roomInput');
-const enterBtn=document.getElementById('enterBtn');
-const roomNameDisplay=document.getElementById('roomNameDisplay');
-const roomIdChip=document.getElementById('roomIdChip');
-const myChipEmoji=document.getElementById('myChipEmoji');
-const myChipName=document.getElementById('myChipName');
-const leaveBtn=document.getElementById('leaveBtn');
-const messagesEl=document.getElementById('messages');
-const membersBar=document.getElementById('membersBar');
-const typingRow=document.getElementById('typingRow');
-const msgInput=document.getElementById('msgInput');
-const sendBtn=document.getElementById('sendBtn');
-const toastEl=document.getElementById('toast');
+// ── Random Alias Generator
+const adjectives = ['Quantum','Neon','Cosmic','Silent','Shadow','Ghost','Solar','Lunar','Cyber','Swift','Vortex','Azure','Crimson','Amber','Crystal','Phantom','Turbo','Storm','Nova','Flux','Stealth','Blaze','Thunder','Mystic','Vapor','Rogue','Glitch','Pixel','Ultra','Dark'];
+const nouns = ['Fox','Panda','Tiger','Wolf','Eagle','Shark','Hawk','Lynx','Cobra','Viper','Phoenix','Dragon','Raven','Falcon','Jaguar','Panther','Manta','Kraken','Gecko','Ibis','Ferret','Chameleon','Axolotl','Okapi','Quokka','Narwhal','Otter','Wyvern','Capybara','Meerkat'];
+const emojis = ['🦊','🐼','🐯','🐺','🦅','🦈','🦁','🐆','🐍','🔮','🦋','🐉','🦜','🦆','🦝','🐙','🌊','⚡','🌌','🎭','🦄','🐬','🦕','🎪','🌙','🍄','🎯','💎','🌀','🔥'];
+const roomWords = ['sunset','cloud','pixel','neon','solar','lunar','cosmic','ghost','swift','mystic','vortex','crystal','amber','rogue','glitch','turbo','storm','nova','cipher','prism'];
 
-function applyAlias(a){myAlias=a.name;myEmoji=a.emoji;aliasNameEl.textContent=myAlias;aliasAvatarEl.textContent=myEmoji}
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function genAlias() {
+  const i = Math.floor(Math.random() * emojis.length);
+  return { name: rand(adjectives) + rand(nouns), emoji: emojis[i] };
+}
+function genRoom() { return rand(roomWords) + Math.floor(10 + Math.random() * 89); }
+
+// ── State
+let myAlias = '', myEmoji = '', myRoom = '', myUserId = '';
+let typingTimer = null, heartbeatInterval = null;
+let lastSender = null, lastTimestamp = 0;
+const seenMsgIds = new Set();
+const activeMembers = new Map();
+const activeTyping = new Map();
+
+// ── Relay (MQTT) & Firebase handles
+let mqttClient = null;
+let roomRef = null, messagesRef = null, membersRef = null, typingRef = null;
+
+// ── DOM References
+const landingEl = document.getElementById('landing');
+const chatEl = document.getElementById('chat');
+const aliasNameEl = document.getElementById('aliasName');
+const aliasAvatarEl = document.getElementById('aliasAvatar');
+const regenBtn = document.getElementById('regenBtn');
+const genRoomBtn = document.getElementById('genRoomBtn');
+const roomInput = document.getElementById('roomInput');
+const enterBtn = document.getElementById('enterBtn');
+const roomNameDisplay = document.getElementById('roomNameDisplay');
+const copyCodeChip = document.getElementById('copyCodeChip');
+const copyLinkChip = document.getElementById('copyLinkChip');
+const myChipEmoji = document.getElementById('myChipEmoji');
+const myChipName = document.getElementById('myChipName');
+const leaveBtn = document.getElementById('leaveBtn');
+const messagesEl = document.getElementById('messages');
+const membersBar = document.getElementById('membersBar');
+const typingRow = document.getElementById('typingRow');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const toastEl = document.getElementById('toast');
+const fbNotice = document.getElementById('fbNotice');
+const fbNoticeClose = document.getElementById('fbNoticeClose');
+
+function applyAlias(a) {
+  myAlias = a.name;
+  myEmoji = a.emoji;
+  aliasNameEl.textContent = myAlias;
+  aliasAvatarEl.textContent = myEmoji;
+}
 applyAlias(genAlias());
 
-regenBtn.addEventListener('click',()=>applyAlias(genAlias()));
-genRoomBtn.addEventListener('click',()=>{roomInput.value=genRoom()});
-enterBtn.addEventListener('click',enterRoom);
-roomInput.addEventListener('keydown',e=>{if(e.key==='Enter')enterRoom()});
+// Pre-fill room code from URL query param if present (?room=xyz)
+const urlParams = new URLSearchParams(window.location.search);
+const queryRoom = urlParams.get('room');
+if (queryRoom) {
+  roomInput.value = queryRoom.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+}
 
-function enterRoom(){
-  const code=(roomInput.value.trim().toLowerCase().replace(/\s+/g,'')||genRoom());
-  roomInput.value=code;
-  myRoom=code;
-  myUserId='u'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+regenBtn.addEventListener('click', () => applyAlias(genAlias()));
+genRoomBtn.addEventListener('click', () => { roomInput.value = genRoom(); });
+enterBtn.addEventListener('click', enterRoom);
+roomInput.addEventListener('keydown', e => { if (e.key === 'Enter') enterRoom(); });
+fbNoticeClose.addEventListener('click', () => { fbNotice.style.display = 'none'; });
+
+function sanitizeRoomCode(val) {
+  return (val.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || genRoom()).slice(0, 24);
+}
+
+function enterRoom() {
+  const code = sanitizeRoomCode(roomInput.value);
+  roomInput.value = code;
+  myRoom = code;
+  myUserId = 'u' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
   showChat();
 }
 
-function showChat(){
-  landingEl.style.display='none';
-  chatEl.style.display='flex';
-  roomNameDisplay.textContent=myRoom;
-  myChipEmoji.textContent=myEmoji;
-  myChipName.textContent=myAlias;
-  setupBroadcastRoom();
+function showChat() {
+  landingEl.style.display = 'none';
+  chatEl.style.display = 'flex';
+  roomNameDisplay.textContent = myRoom;
+  myChipEmoji.textContent = myEmoji;
+  myChipName.textContent = myAlias;
+  
+  // Register self as active member
+  activeMembers.set(myUserId, { alias: myAlias, emoji: myEmoji, lastSeen: Date.now() });
+  renderMembers();
+
+  initRelayAndFirebase();
 }
 
-roomIdChip.addEventListener('click',()=>{
-  navigator.clipboard.writeText(myRoom).then(()=>showToast('Room code copied! Share with friends 🎉')).catch(()=>{showToast('Room: '+myRoom)});
+copyCodeChip.addEventListener('click', () => {
+  navigator.clipboard.writeText(myRoom).then(() => {
+    showToast('Room code copied: ' + myRoom + ' 📋');
+  }).catch(() => {
+    showToast('Room code: ' + myRoom);
+  });
 });
 
-// ── BroadcastChannel (real multi-tab, same device)
-function setupBroadcastRoom(){
-  bc=new BroadcastChannel('ghostchat_'+myRoom);
-  localMembers[myUserId]={alias:myAlias,emoji:myEmoji};
-  renderMembers(localMembers);
-  broadcast({type:'join',userId:myUserId,alias:myAlias,emoji:myEmoji});
-  appendSystemMsg(myEmoji+' '+myAlias+' joined the room');
-  showToast('Joined room: '+myRoom+' 🎉');
+copyLinkChip.addEventListener('click', () => {
+  const shareUrl = window.location.origin + window.location.pathname + '?room=' + encodeURIComponent(myRoom);
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    showToast('Shareable link copied to clipboard! 🔗');
+  }).catch(() => {
+    showToast('Link: ' + shareUrl);
+  });
+});
 
-  bc.onmessage=evt=>{
-    const d=evt.data;
-    if(d.type==='join'){
-      localMembers[d.userId]={alias:d.alias,emoji:d.emoji};
-      renderMembers(localMembers);
-      appendSystemMsg(d.emoji+' '+d.alias+' joined the room');
-      broadcast({type:'announce',userId:myUserId,alias:myAlias,emoji:myEmoji});
-    }else if(d.type==='announce'){
-      localMembers[d.userId]={alias:d.alias,emoji:d.emoji};
-      renderMembers(localMembers);
-    }else if(d.type==='leave'){
-      appendSystemMsg(d.emoji+' '+d.alias+' left the room');
-      delete localMembers[d.userId];
-      delete localTyping[d.userId];
-      renderMembers(localMembers);
-      renderTyping(localTyping);
-    }else if(d.type==='message'){
-      appendMessage(d);
-    }else if(d.type==='typing'){
-      if(d.isTyping)localTyping[d.userId]={alias:d.alias,emoji:d.emoji};
-      else delete localTyping[d.userId];
-      renderTyping(localTyping);
+function showPermissionNotice() {
+  fbNotice.style.display = 'flex';
+}
+
+// ── Multi-Device Realtime Sync Engine (Firebase + Instant Cloud Relay)
+function initRelayAndFirebase() {
+  // 1. Setup Firebase Realtime Database
+  if (db) {
+    try {
+      roomRef = db.ref(`ghostchat/rooms/${myRoom}`);
+      messagesRef = db.ref(`ghostchat/rooms/${myRoom}/messages`);
+      membersRef = db.ref(`ghostchat/rooms/${myRoom}/members/${myUserId}`);
+      typingRef = db.ref(`ghostchat/rooms/${myRoom}/typing/${myUserId}`);
+
+      // Add self to Firebase members
+      membersRef.set({
+        alias: myAlias,
+        emoji: myEmoji,
+        joined: Date.now()
+      }).catch(err => {
+        console.warn("Firebase member set error:", err.message);
+        if (err.message && err.message.toLowerCase().includes('permission denied')) {
+          showPermissionNotice();
+        }
+      });
+
+      membersRef.onDisconnect().remove();
+      typingRef.onDisconnect().remove();
+
+      // Listen for members
+      db.ref(`ghostchat/rooms/${myRoom}/members`).on('value', snap => {
+        const val = snap.val() || {};
+        Object.entries(val).forEach(([uid, m]) => {
+          activeMembers.set(uid, { alias: m.alias, emoji: m.emoji, lastSeen: Date.now() });
+        });
+        renderMembers();
+      }, err => {
+        if (err.message && err.message.toLowerCase().includes('permission denied')) {
+          showPermissionNotice();
+        }
+      });
+
+      // Listen for messages
+      messagesRef.limitToLast(100).on('child_added', snap => {
+        const msg = snap.val();
+        if (!msg) return;
+        
+        // Auto-remove expired message
+        if (Date.now() - msg.timestamp >= DELETE_MS) {
+          snap.ref.remove().catch(() => {});
+          return;
+        }
+
+        handleIncomingMessage({
+          id: msg.id || snap.key,
+          type: msg.type || 'message',
+          userId: msg.userId,
+          alias: msg.alias,
+          emoji: msg.emoji,
+          text: msg.text,
+          timestamp: msg.timestamp
+        }, snap.ref);
+      }, err => {
+        if (err.message && err.message.toLowerCase().includes('permission denied')) {
+          showPermissionNotice();
+        }
+      });
+
+      // Listen for typing
+      db.ref(`ghostchat/rooms/${myRoom}/typing`).on('value', snap => {
+        const val = snap.val() || {};
+        activeTyping.clear();
+        Object.entries(val).forEach(([uid, t]) => {
+          if (uid !== myUserId) activeTyping.set(uid, t);
+        });
+        renderTyping();
+      }, () => {});
+
+    } catch (e) {
+      console.warn("Firebase setup error:", e);
     }
+  }
+
+  // 2. Setup Instant Cloud Relay (MQTT over Secure WebSocket)
+  // Ensures 100% reliable cross-device communication between any phones/PCs
+  try {
+    const topicBase = `ghostchat_app_v2/${myRoom}`;
+    mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+      clientId: 'gc_' + myUserId,
+      keepalive: 30,
+      clean: true
+    });
+
+    mqttClient.on('connect', () => {
+      console.log("Cloud relay connected.");
+      mqttClient.subscribe(`${topicBase}/#`);
+
+      // Announce join
+      publishRelay('presence', {
+        type: 'join',
+        userId: myUserId,
+        alias: myAlias,
+        emoji: myEmoji,
+        time: Date.now()
+      });
+    });
+
+    mqttClient.on('message', (topic, payload) => {
+      try {
+        const data = JSON.parse(payload.toString());
+        if (topic.endsWith('/messages')) {
+          handleIncomingMessage(data);
+        } else if (topic.endsWith('/presence')) {
+          handlePresenceMessage(data);
+        } else if (topic.endsWith('/typing')) {
+          handleTypingMessage(data);
+        }
+      } catch (err) {
+        console.error("Relay message parse error:", err);
+      }
+    });
+
+  } catch (err) {
+    console.warn("Relay init error:", err);
+  }
+
+  // Periodic heartbeat every 4 seconds to maintain presence
+  heartbeatInterval = setInterval(() => {
+    publishRelay('presence', {
+      type: 'ping',
+      userId: myUserId,
+      alias: myAlias,
+      emoji: myEmoji,
+      time: Date.now()
+    });
+
+    // Prune stale members (older than 14 seconds)
+    const now = Date.now();
+    let changed = false;
+    activeMembers.forEach((val, key) => {
+      if (key !== myUserId && now - val.lastSeen > 14000) {
+        activeMembers.delete(key);
+        changed = true;
+      }
+    });
+    if (changed) renderMembers();
+  }, 4000);
+
+  appendSystemMsg(`${myEmoji} ${myAlias} joined the room`);
+  showToast(`Joined room: ${myRoom} 🎉`);
+}
+
+function publishRelay(subTopic, obj) {
+  if (mqttClient && mqttClient.connected) {
+    mqttClient.publish(`ghostchat_app_v2/${myRoom}/${subTopic}`, JSON.stringify(obj));
+  }
+}
+
+function handlePresenceMessage(data) {
+  if (!data || !data.userId) return;
+  if (data.type === 'leave') {
+    if (activeMembers.has(data.userId)) {
+      appendSystemMsg(`${data.emoji || '👻'} ${data.alias || 'A user'} left the room`);
+      activeMembers.delete(data.userId);
+      activeTyping.delete(data.userId);
+      renderMembers();
+      renderTyping();
+    }
+    return;
+  }
+  
+  const isNew = !activeMembers.has(data.userId) && data.userId !== myUserId;
+  activeMembers.set(data.userId, {
+    alias: data.alias,
+    emoji: data.emoji,
+    lastSeen: Date.now()
+  });
+  renderMembers();
+
+  if (isNew && data.type === 'join') {
+    appendSystemMsg(`${data.emoji} ${data.alias} joined the room`);
+    // Reply with a pong so they immediately know we are here
+    publishRelay('presence', {
+      type: 'pong',
+      userId: myUserId,
+      alias: myAlias,
+      emoji: myEmoji,
+      time: Date.now()
+    });
+  }
+}
+
+function handleTypingMessage(data) {
+  if (!data || !data.userId || data.userId === myUserId) return;
+  if (data.isTyping) {
+    activeTyping.set(data.userId, { alias: data.alias, emoji: data.emoji });
+  } else {
+    activeTyping.delete(data.userId);
+  }
+  renderTyping();
+}
+
+function handleIncomingMessage(msg, fbRef) {
+  if (!msg || !msg.id) return;
+  if (seenMsgIds.has(msg.id)) return;
+  seenMsgIds.add(msg.id);
+
+  if (msg.type === 'system') {
+    appendSystemMsg(msg.text);
+    return;
+  }
+
+  appendMessage(msg, fbRef);
+}
+
+// ── Sending Messages
+function sendMsg() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+
+  msgInput.value = '';
+  msgInput.style.height = '';
+  clearTypingSignal();
+
+  const msgId = 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  const payload = {
+    id: msgId,
+    type: 'message',
+    userId: myUserId,
+    alias: myAlias,
+    emoji: myEmoji,
+    text: text,
+    timestamp: Date.now()
   };
+
+  // Push to Firebase
+  if (messagesRef) {
+    messagesRef.push(payload).catch(err => {
+      console.warn("Firebase message push error:", err.message);
+      if (err.message && err.message.toLowerCase().includes('permission denied')) {
+        showPermissionNotice();
+      }
+    });
+  }
+
+  // Publish to Cloud Relay
+  publishRelay('messages', payload);
+
+  // Render locally immediately
+  handleIncomingMessage(payload);
 }
 
-function broadcast(data){if(bc)bc.postMessage(data)}
+sendBtn.addEventListener('click', sendMsg);
+msgInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMsg();
+  }
+});
 
-function sendMsg(){
-  const text=msgInput.value.trim();
-  if(!text)return;
-  msgInput.value='';
-  msgInput.style.height='';
-  clearTypingSignal();
-  const msg={type:'message',alias:myAlias,emoji:myEmoji,userId:myUserId,text,timestamp:Date.now()};
-  broadcast(msg);
-  appendMessage(msg);
-}
-
-sendBtn.addEventListener('click',sendMsg);
-msgInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}});
-msgInput.addEventListener('input',()=>{
-  msgInput.style.height='auto';
-  msgInput.style.height=Math.min(msgInput.scrollHeight,120)+'px';
-  sendTyping(true);
+msgInput.addEventListener('input', () => {
+  msgInput.style.height = 'auto';
+  msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+  sendTypingSignal(true);
   clearTimeout(typingTimer);
-  typingTimer=setTimeout(()=>sendTyping(false),2500);
+  typingTimer = setTimeout(() => sendTypingSignal(false), 2500);
 });
 
-function sendTyping(isTyping){broadcast({type:'typing',userId:myUserId,alias:myAlias,emoji:myEmoji,isTyping})}
-function clearTypingSignal(){clearTimeout(typingTimer);sendTyping(false)}
+function sendTypingSignal(isTyping) {
+  // Cloud relay
+  publishRelay('typing', {
+    userId: myUserId,
+    alias: myAlias,
+    emoji: myEmoji,
+    isTyping: isTyping
+  });
 
-leaveBtn.addEventListener('click',()=>{
+  // Firebase
+  if (typingRef) {
+    if (isTyping) {
+      typingRef.set({ alias: myAlias, emoji: myEmoji }).catch(() => {});
+    } else {
+      typingRef.remove().catch(() => {});
+    }
+  }
+}
+
+function clearTypingSignal() {
+  clearTimeout(typingTimer);
+  sendTypingSignal(false);
+}
+
+// ── Leaving the Room
+leaveBtn.addEventListener('click', () => {
   clearTypingSignal();
-  broadcast({type:'leave',userId:myUserId,alias:myAlias,emoji:myEmoji});
-  if(bc){bc.close();bc=null}
-  chatEl.style.display='none';
-  landingEl.style.display='flex';
-  messagesEl.innerHTML='';
-  localMembers={};localTyping={};
-  lastSender=null;lastTimestamp=0;
+  clearInterval(heartbeatInterval);
+
+  // Announce leave
+  publishRelay('presence', {
+    type: 'leave',
+    userId: myUserId,
+    alias: myAlias,
+    emoji: myEmoji
+  });
+
+  if (membersRef) membersRef.remove().catch(() => {});
+  if (typingRef) typingRef.remove().catch(() => {});
+
+  if (db && myRoom) {
+    db.ref(`ghostchat/rooms/${myRoom}/members`).off();
+    db.ref(`ghostchat/rooms/${myRoom}/typing`).off();
+    if (messagesRef) messagesRef.off();
+  }
+
+  if (mqttClient) {
+    try { mqttClient.end(); } catch (e) {}
+    mqttClient = null;
+  }
+
+  chatEl.style.display = 'none';
+  landingEl.style.display = 'flex';
+  messagesEl.innerHTML = '';
+  activeMembers.clear();
+  activeTyping.clear();
+  seenMsgIds.clear();
+  lastSender = null;
+  lastTimestamp = 0;
 });
 
-// ── Render helpers
-function appendMessage(msg){
-  const isOwn=msg.userId===myUserId;
-  const isSame=msg.userId===lastSender&&(msg.timestamp-lastTimestamp)<60000;
+// ── Rendering Functions
+function appendMessage(msg, fbRef) {
+  const isOwn = msg.userId === myUserId;
+  const isSameSender = (msg.userId === lastSender) && (msg.timestamp - lastTimestamp < 60000);
+  
   let group;
-  const last=messagesEl.lastElementChild;
-  if(last&&last.classList.contains('msg-group')&&last.dataset.uid===msg.userId&&isSame){
-    group=last;
-  }else{
-    group=document.createElement('div');
-    group.className='msg-group '+(isOwn?'own':'other');
-    group.dataset.uid=msg.userId;
-    if(!isOwn){
-      const s=document.createElement('div');
-      s.className='msg-sender';
-      s.innerHTML='<span>'+msg.emoji+'</span> '+escHtml(msg.alias);
+  const lastEl = messagesEl.lastElementChild;
+  if (lastEl && lastEl.classList.contains('msg-group') && lastEl.dataset.uid === msg.userId && isSameSender) {
+    group = lastEl;
+  } else {
+    group = document.createElement('div');
+    group.className = 'msg-group ' + (isOwn ? 'own' : 'other');
+    group.dataset.uid = msg.userId;
+    if (!isOwn) {
+      const s = document.createElement('div');
+      s.className = 'msg-sender';
+      s.innerHTML = '<span>' + (msg.emoji || '👻') + '</span> ' + escHtml(msg.alias || 'Anonymous');
       group.appendChild(s);
     }
     messagesEl.appendChild(group);
   }
 
-  // wrapper holds bubble + time together for clean removal
-  const wrapper=document.createElement('div');
-  wrapper.className='bubble-wrapper';
-  wrapper.style.cssText='display:flex;flex-direction:column;gap:2px';
+  // Wrapper for bubble and timestamp
+  const wrapper = document.createElement('div');
+  wrapper.className = 'bubble-wrapper';
+  wrapper.style.cssText = 'display:flex;flex-direction:column;gap:2px';
 
-  const bubble=document.createElement('div');
-  bubble.className='bubble';
-  bubble.textContent=msg.text;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = msg.text;
 
-  // ── countdown bar
-  const bar=document.createElement('div');
-  bar.className='countdown-bar';
-  const elapsed=Date.now()-msg.timestamp;
-  const remaining=Math.max(0,DELETE_MS-elapsed);
-  const pct=remaining/DELETE_MS;
-  bar.style.transform='scaleX('+pct+')';
-  bar.style.animation='shrink '+remaining+'ms linear forwards';
+  // 10-Minute Countdown Bar
+  const bar = document.createElement('div');
+  bar.className = 'countdown-bar';
+  const elapsed = Date.now() - msg.timestamp;
+  const remaining = Math.max(0, DELETE_MS - elapsed);
+  const pct = remaining / DELETE_MS;
+  bar.style.transform = 'scaleX(' + pct + ')';
+  bar.style.animation = 'shrink ' + remaining + 'ms linear forwards';
   bubble.appendChild(bar);
 
-  // warn at 30 s remaining
-  const warnDelay=Math.max(0,remaining-30000);
-  const warnTimer=setTimeout(()=>bar.classList.add('warn'),warnDelay);
+  // Turn red during final 60 seconds of the 10-minute countdown
+  const warnDelay = Math.max(0, remaining - 60000);
+  const warnTimer = setTimeout(() => {
+    bar.classList.add('warn');
+  }, warnDelay);
 
   wrapper.appendChild(bubble);
 
-  const time=document.createElement('div');
-  time.className='bubble-time';
-  time.textContent=fmtTime(msg.timestamp);
-  wrapper.appendChild(time);
+  const timeEl = document.createElement('div');
+  timeEl.className = 'bubble-time';
+  timeEl.textContent = fmtTime(msg.timestamp);
+  wrapper.appendChild(timeEl);
+
   group.appendChild(wrapper);
 
-  // ── auto-delete after remaining ms
-  setTimeout(()=>{
+  // Auto-delete message after 10 minutes
+  setTimeout(() => {
     clearTimeout(warnTimer);
     wrapper.classList.add('dying');
-    setTimeout(()=>{
+    setTimeout(() => {
       wrapper.remove();
-      // if group is now empty (only has sender label or nothing), remove it
-      const bubbles=group.querySelectorAll('.bubble-wrapper');
-      if(bubbles.length===0) group.remove();
-    },650);
-  },remaining);
+      if (group.querySelectorAll('.bubble-wrapper').length === 0) {
+        group.remove();
+      }
+    }, 650);
 
-  lastSender=msg.userId;lastTimestamp=msg.timestamp;
+    // Remove from Firebase if ref provided
+    if (fbRef) {
+      fbRef.remove().catch(() => {});
+    }
+  }, remaining);
+
+  lastSender = msg.userId;
+  lastTimestamp = msg.timestamp;
   scrollBottom();
 }
 
-function appendSystemMsg(text){
-  const el=document.createElement('div');
-  el.className='sys-msg';
-  el.textContent=text;
+function appendSystemMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'sys-msg';
+  el.textContent = text;
   messagesEl.appendChild(el);
+
+  // Auto-fade system messages after 10 minutes
+  setTimeout(() => {
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 600);
+  }, DELETE_MS);
+
   scrollBottom();
 }
 
-function renderMembers(members){
-  const entries=Object.entries(members);
-  membersBar.innerHTML='<span style="flex-shrink:0;margin-right:4px">&#x1F465; Online ('+entries.length+'):</span>';
-  entries.forEach(([uid,m])=>{
-    const chip=document.createElement('div');
-    chip.className='member-chip';
-    chip.innerHTML='<span>'+m.emoji+'</span><span>'+escHtml(m.alias)+(uid===myUserId?' (you)':'')+'</span>';
+function renderMembers() {
+  const list = Array.from(activeMembers.entries());
+  membersBar.innerHTML = '<span style="flex-shrink:0;margin-right:4px">&#x1F465; Online (' + list.length + '):</span>';
+  list.forEach(([uid, m]) => {
+    const chip = document.createElement('div');
+    chip.className = 'member-chip';
+    chip.innerHTML = '<span>' + (m.emoji || '👻') + '</span><span>' + escHtml(m.alias || 'Anonymous') + (uid === myUserId ? ' (you)' : '') + '</span>';
     membersBar.appendChild(chip);
   });
 }
 
-function renderTyping(typing){
-  const others=Object.entries(typing).filter(([uid])=>uid!==myUserId);
-  if(!others.length){typingRow.innerHTML='';return}
-  const names=others.map(([,v])=>v.emoji+' '+v.alias).join(', ');
-  typingRow.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div><span>'+escHtml(names)+' '+(others.length===1?'is':'are')+' typing...</span>';
+function renderTyping() {
+  const typingUsers = Array.from(activeTyping.values());
+  if (!typingUsers.length) {
+    typingRow.innerHTML = '';
+    return;
+  }
+  const names = typingUsers.map(v => (v.emoji || '') + ' ' + v.alias).join(', ');
+  typingRow.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div><span>' + escHtml(names) + ' ' + (typingUsers.length === 1 ? 'is' : 'are') + ' typing...</span>';
 }
 
-function fmtTime(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
-function scrollBottom(){requestAnimationFrame(()=>{messagesEl.scrollTop=messagesEl.scrollHeight})}
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
-function showToast(msg,dur=3000){
-  toastEl.textContent=msg;
+function scrollBottom() {
+  requestAnimationFrame(() => {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function showToast(msg, dur = 3000) {
+  toastEl.textContent = msg;
   toastEl.classList.add('show');
-  setTimeout(()=>toastEl.classList.remove('show'),dur);
+  setTimeout(() => toastEl.classList.remove('show'), dur);
 }
 </script>
 </body>
